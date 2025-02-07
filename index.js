@@ -1,19 +1,12 @@
 #!/usr/bin/env node
 
-import { execSync } from 'child_process';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { promisify } from 'util';
-import { createSpinner } from 'nanospinner';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const { execSync } = require('child_process');
+const fs = require('fs');
+const path = require('path');
 
 const GITHUB_REPO_URL = 'https://github.com/backendsample1/create-advanced-nest.git';
 
 async function main() {
-    // Get project name from command line arguments
     const projectName = process.argv[2];
     
     if (!projectName) {
@@ -36,29 +29,27 @@ async function main() {
         process.exit(1);
     }
 
-    const spinner = createSpinner('Creating your NestJS project...').start();
+    console.log('Creating your NestJS project...');
 
     try {
-        // Clone your template
+        // Clone your template without git history
         execSync(`git clone --depth 1 ${GITHUB_REPO_URL} ${projectPath}`);
         
-        // Remove .git folder
-        execSync(`cd ${projectPath} && rm -rf .git`);
+        // Remove unnecessary files
+        execSync(`cd ${projectPath} && rm -rf .git index.js package-lock.json`);
         
         // Install dependencies
         execSync(`cd ${projectPath} && npm install`);
         
-        spinner.success({ text: 'Project created successfully!' });
-        
-        console.log('\n🚀 To get started:');
-        console.log(`\n  cd ${projectName}`);
+        console.log('\n🚀 Project created successfully!');
+        console.log(`\nTo get started:`);
+        console.log(`  cd ${projectName}`);
         console.log('  npm run start:dev\n');
         
     } catch (error) {
-        spinner.error({ text: 'Failed to create project' });
-        console.log(error);
+        console.error('Failed to create project:', error);
         process.exit(1);
     }
 }
 
-main();
+main().catch(console.error);
