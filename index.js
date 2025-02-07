@@ -40,7 +40,7 @@ async function main() {
 
     try {
         // Clone your template
-        execSync(`git clone --depth 1 YOUR_GITHUB_REPO_URL ${projectPath}`);
+        execSync(`git clone --depth 1 ${GITHUB_REPO_URL} ${projectPath}`);
         
         // Remove .git folder
         execSync(`cd ${projectPath} && rm -rf .git`);
